@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Simplicity — Simple, Easy to Understand, and FAIR</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #ffffff; color: #1a2620; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f0f5f2; }
+        ::-webkit-scrollbar-thumb { background: #2d8c5a; border-radius: 3px; }
+
+        /* NAV */
+        .nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 18px 40px; transition: all 0.3s; }
+        .nav.scrolled { padding: 12px 40px; background: rgba(255,255,255,0.92); backdrop-filter: blur(15px); box-shadow: 0 1px 15px rgba(0,0,0,0.08); }
+        .nav.scrolled .nbrand { color: #2d8c5a; }
+        .nav.scrolled .nlink { color: #3a5a44; }
+        .nav.scrolled .nlink:hover { color: #2d8c5a; }
+        .nav.scrolled .nmenu { color: #2d8c5a; }
+
+        .nwrap { max-width: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .nbrand { font-weight: 700; font-size: 1.1rem; color: #fff; text-decoration: none; transition: color 0.3s; }
+        .nlinks { display: flex; gap: 28px; align-items: center; }
+        .nlink { color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: color 0.3s; }
+        .nlink:hover { color: #fff; }
+        .nmenu { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        @media (max-width: 900px) { .nlinks { display: none; } .nmenu { display: block; } }
+
+        .smenu { position: fixed; top: 0; right: -100%; width: 65%; max-width: 300px; height: 100vh; background: #fff; z-index: 200; padding: 70px 24px; transition: right 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: -6px 0 25px rgba(0,0,0,0.1); }
+        .smenu.open { right: 0; }
+        .smenu a { display: block; padding: 12px 0; color: #1a2620; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid #f0f0f0; }
+        .smenu a:hover { color: #2d8c5a; }
+        .sclose { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; color: #999; cursor: pointer; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 199; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .overlay.open { opacity: 1; pointer-events: all; }
+
+        /* HERO */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(155deg, #0a1f12 0%, #153a28 50%, #0d2419 100%); }
+        .hpattern { position: absolute; inset: 0; background-image: linear-gradient(rgba(45,140,90,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(45,140,90,0.04) 1px, transparent 1px); background-size: 120px 120px; mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%); -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 60%); }
+        .hglow { position: absolute; border-radius: 50%; filter: blur(140px); pointer-events: none; }
+        .hg1 { width: 500px; height: 500px; background: rgba(45,140,90,0.12); top: -15%; right: 5%; animation: glow 22s ease-in-out infinite; }
+        .hg2 { width: 400px; height: 400px; background: rgba(60,179,113,0.08); bottom: -12%; left: 8%; animation: glow 26s ease-in-out infinite reverse; }
+        @keyframes glow { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px,-20px); } }
+        .hcontent { transform-style: preserve-3d; transition: transform 0.12s ease-out; }
+
+        /* BUTTONS */
+        .btng { display: inline-flex; align-items: center; gap: 6px; background: #2d8c5a; color: #fff; font-weight: 600; font-family: inherit; padding: 13px 32px; border-radius: 50px; border: none; font-size: 0.88rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(45,140,90,0.2); text-decoration: none; }
+        .btng:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,140,90,0.3); }
+        .btno { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: rgba(255,255,255,0.7); font-weight: 600; font-family: inherit; padding: 11px 28px; border-radius: 50px; border: 1.5px solid rgba(255,255,255,0.2); font-size: 0.88rem; cursor: pointer; transition: all 0.3s; text-decoration: none; }
+        .btno:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+        /* TAG */
+        .tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 30px; background: #e8f5ee; color: #2d8c5a; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+        /* GRID */
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        @media (max-width: 1024px) { .row { grid-template-columns: 1fr; gap: 40px; } }
+
+        /* 2-COL CONTENT */
+        .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+        @media (max-width: 1024px) { .twocol { grid-template-columns: 1fr; gap: 40px; } }
+
+        /* ACC */
+        .aitem { border: 1px solid #d8e8df; border-radius: 12px; overflow: hidden; transition: all 0.3s; background: #fff; margin-bottom: 8px; }
+        .aitem:hover { border-color: #c0d9cc; }
+        .aitem.open { border-color: #a0c9ad; }
+        .ahead { padding: 18px 22px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
+        .ahead:hover { background: #f9fcfb; }
+        .abody { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1); }
+        .aitem.open .abody { max-height: 400px; }
+        .aitem.open .achev { transform: rotate(180deg); }
+        .achev { transition: transform 0.3s; color: #2d8c5a; font-size: 0.75rem; }
+
+        /* CARD */
+        .tcard { background: #fff; border-radius: 14px; border: 1px solid #d8e8df; padding: 24px; transition: all 0.3s; }
+        .tcard:hover { transform: translateY(-3px); box-shadow: 0 12px 32px -8px rgba(45,140,90,0.1); border-color: #c0d9cc; }
+        .tquote { color: #4a6b52; font-size: 0.9rem; line-height: 1.75; margin-bottom: 16px; }
+        .tauthor { display: flex; align-items: center; gap: 10px; border-top: 1px solid #e8f0eb; padding-top: 12px; }
+        .tavatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3cb371, #2d8c5a); }
+        .tname { font-weight: 600; font-size: 0.8rem; color: #1a2620; }
+        .tcomp { font-size: 0.7rem; color: #7a8f7f; }
+
+        /* FORM */
+        .finput { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1.5px solid #d8e8df; background: #f8fbf9; font-family: inherit; font-size: 0.85rem; color: #1a2620; transition: all 0.3s; outline: none; }
+        .finput:focus { border-color: #2d8c5a; box-shadow: 0 0 0 3px rgba(45,140,90,0.08); background: #fff; }
+        .finput::placeholder { color: #a5b9ad; }
+
+        /* REVEAL */
+        .rv { opacity: 0; transform: translateY(25px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+        .rv.vis { opacity: 1; transform: translateY(0); }
+
+        /* VISUAL */
+        .visual { width: 100%; height: 300px; border-radius: 16px; background: linear-gradient(135deg, #e8f5ee 0%, #c5dbd0 100%); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+
+        /* FOOTER */
+        .flink { color: #7a8f7f; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .flink:hover { color: #2d8c5a; }
+
+        /* DIV */
+        .divider { height: 1px; background: linear-gradient(90deg, transparent, #c5dbd0, transparent); margin: 60px 0; }
+
+        @media (max-width: 768px) {
+            .nav { padding: 14px 20px; }
+            .nwrap { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+    <div class="nwrap">
+        <a href="#home" class="nbrand">Pay Simplicity</a>
+        <div class="nlinks">
+            <a href="#why" class="nlink">Why We Exist</a>
+            <a href="#who" class="nlink">Who We Are</a>
+            <a href="#speaking" class="nlink">Speaking</a>
+            <a href="#testimonials" class="nlink">Testimonials</a>
+            <a href="#contact" class="btng" style="padding:9px 24px;font-size:0.8rem;">Contact</a>
+        </div>
+        <button class="nmenu" id="mbtn" onclick="openM()">☰</button>
+    </div>
+</nav>
+
+<div class="overlay" id="ovr" onclick="closeM()"></div>
+<div class="smenu" id="sm">
+    <button class="sclose" onclick="closeM()">✕</button>
+    <a href="#home" onclick="closeM()">Home</a>
+    <a href="#why" onclick="closeM()">Why We Exist</a>
+    <a href="#who" onclick="closeM()">Who We Are</a>
+    <a href="#speaking" onclick="closeM()">Speaking</a>
+    <a href="#testimonials" onclick="closeM()">Testimonials</a>
+    <a href="#contact" onclick="closeM()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="hpattern"></div>
+    <div class="hglow hg1"></div>
+    <div class="hglow hg2"></div>
+
+    <div style="width: 100%; max-width: 100%; padding: 0 40px; text-align: center; position: relative; z-10;" class="rv">
+        <div class="hcontent" id="hc">
+            <p style="color: rgba(60,179,113,0.5); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;">Welcome to</p>
+
+            <h1 style="color: #fff; font-size: 5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px;">
+                Pay <span style="background: linear-gradient(135deg, #3cb371, #2d8c5a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Simplicity!</span>
+            </h1>
+
+            <p style="color: rgba(168,240,198,0.6); font-size: 1.2rem; line-height: 1.8; max-width: 700px; margin: 0 auto 30px;">
+                Helping make employee pay <span style="color: #fff; font-weight: 600;">simple</span>, <span style="color: #fff; font-weight: 600;">easy to understand</span>, and <span style="color: #3cb371; font-weight: 700;">FAIR</span>.
+            </p>
+
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="#why" class="btng">Learn More →</a>
+                <a href="#contact" class="btno">Get in Touch</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); opacity: 0.2; text-align: center;">
+        <p style="color: #3cb371; font-size: 0.65rem; letter-spacing: 0.2em; margin-bottom: 4px;">SCROLL</p>
+        <div style="width: 1px; height: 20px; background: linear-gradient(to bottom, #3cb371, transparent); margin: 0 auto;"></div>
+    </div>
+</section>
+
+<!-- WHY WE EXIST -->
+<section style="padding: 80px 40px; background: #fff;" id="why">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <div class="tag rv">
+                <span style="width: 1.5px; height: 1.5px; border-radius: 50%; background: #2d8c5a; display: inline-block;"></span>
+                Why We Exist
+            </div>
+            <h2 style="font-size: 3.2rem; font-weight: 900; margin-top: 20px; color: #1a2620; line-height: 1.2;" class="rv">Our vision is to simplify<br>employee pay to make it<br><span style="color: #2d8c5a;">easy to understand, compelling, and fair</span></h2>
+        </div>
+
+        <div class="twocol">
+            <div class="rv" style="transition-delay: 0.1s;">
+                <p style="color: #5a7a66; font-size: 1rem; line-height: 1.9; margin-bottom: 24px;">
+                    <strong style="color: #2d8c5a;">We help people think differently about their pay and people programs,</strong> leveraging leadership experience at some of the world's leading companies.
+                </p>
+                <p style="color: #5a7a66; font-size: 1rem; line-height: 1.9; margin-bottom: 24px;">
+                    With deep expertise in Total Rewards and Compensation, our team partners with people in organizations ranging from startups to Fortune 200 companies to successfully innovate and evolve the employee experience related to pay and benefits.
+                </p>
+                <p style="color: #5a7a66; font-size: 1rem; line-height: 1.9;">
+                    There is something liberating and empowering to learning about how pay works. Let us help you plan and prioritize pay from design to delivery.
+                </p>
+                <p style="color: #2d8c5a; font-size: 1.3rem; font-weight: 700; margin-top: 24px;">Change the way you view pay!</p>
+            </div>
+
+            <div class="rv" style="transition-delay: 0.2s;">
+                <div class="visual">💡</div>
+                <p style="color: #7a8f7f; font-size: 0.85rem; margin-top: 16px; text-align: center;">Experience Across Leading Organizations</p>
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 24px; flex-wrap: wrap;">
+                    <span style="color: #2d8c5a; font-weight: 700; font-size: 0.9rem;">Microsoft</span>
+                    <span style="color: #2d8c5a; font-weight: 700; font-size: 0.9rem;">Nike</span>
+                    <span style="color: #2d8c5a; font-weight: 700; font-size: 0.9rem;">Tableau</span>
+                    <span style="color: #2d8c5a; font-weight: 700; font-size: 0.9rem;">Airtable</span>
+                    <span style="color: #2d8c5a; font-weight: 700; font-size: 0.9rem;">Tetra Pak</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider" style="max-width: 1400px; margin: 0 auto;"></div>
+
+<!-- WHO WE ARE -->
+<section style="padding: 80px 40px; background: #fff;" id="who">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <div class="tag rv">
+                <span style="width: 1.5px; height: 1.5px; border-radius: 50%; background: #2d8c5a; display: inline-block;"></span>
+                Who We Are
+            </div>
+            <h2 style="font-size: 3.2rem; font-weight: 900; margin-top: 20px; color: #1a2620;" class="rv">Meet the Founder</h2>
+        </div>
+
+        <div class="twocol">
+            <div class="rv" style="transition-delay: 0.1s;">
+                <div class="visual">👤</div>
+                <p style="color: #7a8f7f; font-size: 0.85rem; margin-top: 16px; text-align: center;">Nick Rettenmyer</p>
+            </div>
+
+            <div class="rv" style="transition-delay: 0.2s;">
+                <h3 style="font-size: 1.4rem; font-weight: 700; color: #1a2620; margin-bottom: 20px;">Nick Rettenmyer</h3>
+                <p style="color: #5a7a66; font-size: 0.95rem; line-height: 1.9; margin-bottom: 16px;">
+                    Nick is the founder of Pay Simplicity and brings highly unique personal and professional experience to his clients and partners. These experiences span companies in a variety of industries, in countries in every region of the world.
+                </p>
+                <p style="color: #5a7a66; font-size: 0.95rem; line-height: 1.9; margin-bottom: 16px;">
+                    Nick has lived abroad, worked, and traveled extensively around the world, and deeply understands cultural differences and different approaches to work and life.
+                </p>
+                <p style="color: #5a7a66; font-size: 0.95rem; line-height: 1.9; margin-bottom: 16px;">
+                    His background is strongly influenced by his lifelong involvement in high level sport and athletics. These competitive experiences ingrained the connection, confidence, and resilience that sports develop.
+                </p>
+                <p style="color: #5a7a66; font-size: 0.95rem; line-height: 1.9; margin-bottom: 20px;">
+                    Nick's business career spans two decades of compensation-related experience solving challenging problems. His portfolio includes a strong track record of innovation with some of the world's most recognizable brands.
+                </p>
+                <p style="color: #5a7a66; font-size: 0.95rem; line-height: 1.9; margin-bottom: 20px;">
+                    Nick started Pay Simplicity to take employee pay strategy, design, and communications from routine to compelling and to open the black box of corporate pay, bridge perception gaps, and foster pay advocacy and fairness.
+                </p>
+                <p style="color: #7a8f7f; font-size: 0.85rem; border-top: 1px solid #d8e8df; padding-top: 16px;">
+                    B.S. in Marketing, University of South Florida. M.B.A., University of Texas at Austin — Red McCombs School of Business.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider" style="max-width: 1400px; margin: 0 auto;"></div>
+
+<!-- SPEAKING -->
+<section style="padding: 80px 40px; background: #fff;" id="speaking">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <div class="tag rv">
+                <span style="width: 1.5px; height: 1.5px; border-radius: 50%; background: #2d8c5a; display: inline-block;"></span>
+                Speaking
+            </div>
+            <h2 style="font-size: 3.2rem; font-weight: 900; margin-top: 20px; color: #1a2620;" class="rv">Speaking & Presentations</h2>
+            <p style="color: #5a7a66; font-size: 1.05rem; font-style: italic; margin-top: 16px;" class="rv">Discover ways to inspire attendees and improve pay fluency & advocacy</p>
+        </div>
+
+        <div style="space-y: 0;">
+            <div class="aitem rv" style="transition-delay: 0.05s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork 2023 — Equitable & Inclusive Total Rewards</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">San Diego, CA. What makes a Total Rewards program equitable and inclusive? Learn how embedding E&I requires an "activist management" approach across benefits, compensation, and career development.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.08s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork 2023 — Kindergarten Principles for Rewards</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Get straightforward guidance to revamp your total rewards program using fundamental principles of clarity, transparency, and purpose.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.11s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork Webinar — Pay Equity Trends & Practices</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Leveraging insights from 100+ pay equity analyses, trends and practices from organizations "getting it right." Attendees walk away empowered to address pay equity in a lasting way.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.14s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork 2020 — Is Skill-Based Pay 2.0 Right?</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Explore if skill-based pay 2.0 is the right model to support today's turbulent pace of change in the evolving definition of work and jobs.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.17s;">
+                <div class="ahead" onclick="togA(this)"><span>CHRO Exchange — Reinventing Rewards & Recognition</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Panel discussion on managing intrinsic and extrinsic motivation through agile rewards strategies and leveraging data for employee-centric programs.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.2s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork 2016 — Employee Well-Being & Human Capital ROI</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">How leading employers support total well-being of employees and realize better returns on their human capital investment through comprehensive strategies.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.23s;">
+                <div class="ahead" onclick="togA(this)"><span>WorldatWork Webinar — Why Microsoft Abandoned Ratings</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Two-part series on Microsoft's decision to abandon performance ratings and key learnings after a full performance cycle without ratings.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.26s;">
+                <div class="ahead" onclick="togA(this)"><span>Mercer EMEA — Conjoint Analysis for Rewards</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">Using conjoint analysis to understand total rewards programs most desired and effective, quantifying relative value of individual rewards elements.</div></div>
+            </div>
+            <div class="aitem rv" style="transition-delay: 0.29s;">
+                <div class="ahead" onclick="togA(this)"><span>Mercer EMEA — Flexible Compensation at Microsoft</span><span class="achev">▼</span></div>
+                <div class="abody"><div style="padding: 16px 20px; font-size: 0.85rem; color: #5a7a66; line-height: 1.7;">How Microsoft develops flexible compensation programs and makes strategic investments to attract and retain high-performing technology managers globally.</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider" style="max-width: 1400px; margin: 0 auto;"></div>
+
+<!-- TESTIMONIALS -->
+<section style="padding: 80px 40px; background: #fff;" id="testimonials">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <div class="tag rv">
+                <span style="width: 1.5px; height: 1.5px; border-radius: 50%; background: #2d8c5a; display: inline-block;"></span>
+                Testimonials
+            </div>
+            <h2 style="font-size: 3.2rem; font-weight: 900; margin-top: 20px; color: #1a2620;" class="rv">What people are saying</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            <div class="tcard rv" style="transition-delay: 0.05s;">
+                <p class="tquote">"I consider Nick a thought leader in the total rewards space who can operate at both strategic and operational levels with the ability to simplify technical aspects."</p>
+                <div class="tauthor">
+                    <div class="tavatar"></div>
+                    <div>
+                        <div class="tname">Joel Sekuta</div>
+                        <div class="tcomp">Salesforce</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tcard rv" style="transition-delay: 0.1s;">
+                <p class="tquote">"Nick simplifies incredibly complex programs and problems within organizations making them exquisitely simple for us lay people to understand."</p>
+                <div class="tauthor">
+                    <div class="tavatar"></div>
+                    <div>
+                        <div class="tname">Regina Perata</div>
+                        <div class="tcomp">Deloitte</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tcard rv" style="transition-delay: 0.15s;">
+                <p class="tquote">"The most competent C&B professional I've had the pleasure working with. Extremely strong in business understanding and precise in deploying solutions."</p>
+                <div class="tauthor">
+                    <div class="tavatar"></div>
+                    <div>
+                        <div class="tname">Fredrik Lindberg</div>
+                        <div class="tcomp">SEB, Sweden</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tcard rv" style="transition-delay: 0.2s;">
+                <p class="tquote">"Nick is the individual you want in leadership if an initiative requires strategic thinking — an ability to see the big picture and tie together disparate functions."</p>
+                <div class="tauthor">
+                    <div class="tavatar"></div>
+                    <div>
+                        <div class="tname">Lori Block</div>
+                        <div class="tcomp">emHrge consulting</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tcard rv" style="transition-delay: 0.25s;">
+                <p class="tquote">"A technical expert who never fails at execution. Nick understands business, innovates solutions, and finds a way to have fun."</p>
+                <div class="tauthor">
+                    <div class="tavatar"></div>
+                    <div>
+                        <div class="tname">Michael Tovar</div>
+                        <div class="tcomp">ING, Netherlands</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider" style="max-width: 1400px; margin: 0 auto;"></div>
+
+<!-- CONTACT -->
+<section style="padding: 80px 40px; background: #fff;" id="contact">
+    <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+        <div class="tag rv">
+            <span style="width: 1.5px; height: 1.5px; border-radius: 50%; background: #2d8c5a; display: inline-block;"></span>
+            Contact
+        </div>
+        <h2 style="font-size: 3.2rem; font-weight: 900; margin: 20px 0 30px; color: #1a2620;" class="rv">Questions or ready to learn more?</h2>
+        <p style="color: #5a7a66; font-size: 1rem; margin-bottom: 40px;" class="rv">We'd love to hear from you. Reach out and let's start a conversation about simplifying pay.</p>
+
+        <form style="space-y: 12px;" onsubmit="handleSubmit(event)" class="rv">
+            <input type="text" placeholder="Your Name" required class="finput" style="margin-bottom: 12px;">
+            <input type="email" placeholder="Email Address" required class="finput" style="margin-bottom: 12px;">
+            <input type="text" placeholder="Company" class="finput" style="margin-bottom: 12px;">
+            <textarea placeholder="Your message..." rows="5" class="finput" style="margin-bottom: 16px;"></textarea>
+            <button type="submit" class="btng" style="width: 100%; justify-content: center; padding: 14px;">Send Message →</button>
+        </form>
+
+        <p style="color: #9fa8a0; font-size: 0.8rem; margin-top: 16px;">We'll get back to you within 24 hours.</p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid #d8e8df; padding: 40px; background: #fff;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; margin-bottom: 24px;">
+            <a href="#home" style="font-weight: 700; color: #2d8c5a; text-decoration: none;">Pay Simplicity</a>
+            <div style="display: flex; gap: 28px; flex-wrap: wrap; justify-content: center;">
+                <a href="#home" class="flink">Home</a>
+                <a href="#why" class="flink">Why We Exist</a>
+                <a href="#who" class="flink">Who We Are</a>
+                <a href="#speaking" class="flink">Speaking</a>
+                <a href="#testimonials" class="flink">Testimonials</a>
+                <a href="#contact" class="flink">Contact</a>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #e8f0eb; padding-top: 20px; text-align: center;">
+            <p style="color: #9fa8a0; font-size: 0.75rem;">© 2025 Pay Simplicity. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50));
+
+function openM() { document.getElementById('sm').classList.add('open'); document.getElementById('ovr').classList.add('open'); }
+function closeM() { document.getElementById('sm').classList.remove('open'); document.getElementById('ovr').classList.remove('open'); }
+
+const hc = document.getElementById('hc');
+document.querySelector('.hero').addEventListener('mousemove', e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    hc.style.transform = `rotateY(${x * 3}deg) rotateX(${-y * 3}deg)`;
+});
+document.querySelector('.hero').addEventListener('mouseleave', () => { hc.style.transform = ''; });
+
+function togA(h) { h.parentElement.classList.toggle('open'); }
+
+function rv() { document.querySelectorAll('.rv').forEach(e => { if (e.getBoundingClientRect().top < innerHeight - 50) e.classList.add('vis'); }); }
+addEventListener('scroll', rv);
+addEventListener('load', rv);
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+function handleSubmit(e) {
+    e.preventDefault();
+    const b = e.target.querySelector('button');
+    b.textContent = '✓ Message Sent!';
+    b.style.background = '#1a7a42';
+    setTimeout(() => { b.textContent = 'Send Message →'; b.style.background = ''; e.target.reset(); }, 3000);
+}
+</script>
+
+</body>
+</html>
